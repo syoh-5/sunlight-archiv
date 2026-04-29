@@ -73,10 +73,10 @@ with tabs[1]:
 
     articles = [
         {
-            "title": "PPA",
-            "source": "",
-            "date": "",
-            "url": "https://https://www.lawtimes.co.kr/news/articleView.html?idxno=217995&utm_source=chatgpt.com"
+            "title": "재생에너지 보급제도 개편 방향",
+            "source": "법률신문",
+            "date": "2026.03.19 10:49",
+            "url": "https://www.lawtimes.co.kr/news/articleView.html?idxno=217995&utm_source=chatgpt.com"
         },
         {
             "title": "두번째 기사 제목",
