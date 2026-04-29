@@ -24,6 +24,27 @@ def show_pdf(file_path):
         pdf_bytes = f.read()
     pdf_viewer(pdf_bytes)
 
+# 카드형 파일 선택 함수
+def file_card_selector(files, folder, session_key):
+    if session_key not in st.session_state:
+        st.session_state[session_key] = None
+
+    cols = st.columns(3)
+    for i, file_name in enumerate(files):
+        with cols[i % 3]:
+            # 선택된 파일이면 강조 표시
+            is_selected = st.session_state[session_key] == file_name
+            label = f"{'✅' if is_selected else '📄'} {file_name.replace('.pdf', '')}"
+            if st.button(label, key=f"{session_key}_{i}", use_container_width=True):
+                st.session_state[session_key] = file_name
+                st.rerun()
+
+    # 선택된 파일 PDF 뷰어로 표시
+    if st.session_state[session_key]:
+        st.divider()
+        st.markdown(f"**📖 현재 보는 파일:** `{st.session_state[session_key]}`")
+        show_pdf(os.path.join(folder, st.session_state[session_key]))
+
 # 3. 본문
 st.title("☀️ 도민발전소 자료모음")
 
@@ -32,12 +53,10 @@ tabs = st.tabs(["📋 기획안", "📈 수익성 분석", "🤝 협동조합", 
 # --- 탭 1: 기획안 ---
 with tabs[0]:
     st.header("📋 기획안")
-    st.write("조회할 파일을 선택하세요.")
+    st.caption("파일을 클릭하면 바로 아래에 열립니다.")
     proposal_files = sorted([f for f in os.listdir('proposals') if f.endswith('.pdf')])
     if proposal_files:
-        selected = st.selectbox("📄 파일 선택", proposal_files, key="proposal_select")
-        if selected:
-            show_pdf(os.path.join('proposals', selected))
+        file_card_selector(proposal_files, 'proposals', 'selected_proposal')
     else:
         st.info("현재 업로드된 기획안이 없습니다.")
 
@@ -49,9 +68,34 @@ with tabs[1]:
 # --- 탭 3: 협동조합 ---
 with tabs[2]:
     st.header("🤝 협동조합 거버넌스")
+
     with st.expander("📌 조합 설립 관련 자료"):
         st.write("- 표준 정관 안")
         st.write("- 조합원 모집 가이드")
+
+    st.divider()
+    st.subheader("🖼️ 협동조합 자료 갤러리")
+
+    # images 폴더에서 이미지 불러오기
+    image_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
+    if os.path.exists('images'):
+        image_files = sorted([
+            f for f in os.listdir('images')
+            if f.lower().endswith(image_extensions)
+        ])
+        if image_files:
+            cols = st.columns(3)
+            for i, img_file in enumerate(image_files):
+                with cols[i % 3]:
+                    st.image(
+                        os.path.join('images', img_file),
+                        caption=img_file.rsplit('.', 1)[0],
+                        use_container_width=True
+                    )
+        else:
+            st.info("현재 업로드된 이미지가 없습니다.")
+    else:
+        st.info("images 폴더가 없습니다. GitHub에 images 폴더를 만들고 이미지를 업로드해주세요.")
 
 # --- 탭 4: 입찰시나리오 ---
 with tabs[3]:
@@ -61,11 +105,9 @@ with tabs[3]:
 # --- 탭 5: 법령 ---
 with tabs[4]:
     st.header("📝 법령검토")
-    st.write("조회할 법령을 선택하세요.")
+    st.caption("파일을 클릭하면 바로 아래에 열립니다.")
     law_files = sorted([f for f in os.listdir('laws') if f.endswith('.pdf')])
     if law_files:
-        selected_law = st.selectbox("📄 파일 선택", law_files, key="law_select")
-        if selected_law:
-            show_pdf(os.path.join('laws', selected_law))
+        file_card_selector(law_files, 'laws', 'selected_law')
     else:
         st.info("업로드된 법령 자료가 없습니다.")
