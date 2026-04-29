@@ -23,9 +23,9 @@ def check_password():
 
 if check_password():
     # 2. 본문 내용 (비밀번호 통과 시 보임)
-    st.title("☀️ 도민발전소 자료 및 법령실")
+    st.title("☀️ 도민발전소 자료실")
     
-    tab1, tab2 = st.tabs(["📄 자료 다운로드", "⚖️ 필수 법령"])
+    tab1, tab2 = st.tabs(["📄 전체자료확인", "⚖️ 필수 법령"])
 
     with tab1:
         st.subheader("업로드된 모든 PDF 자료")
@@ -45,7 +45,7 @@ if check_password():
             st.warning("아직 업로드된 PDF 파일이 없습니다.")
 
     with tab2:
-        st.subheader("사업 검토 필수 법령")
+        st.subheader("협동조합 아카이브")
         st.markdown("""
         - **신재생에너지법**: 사업 추진의 법적 근거
         - **분산에너지 활성화 특별법**: VPP 및 지역 에너지 체계의 핵심
