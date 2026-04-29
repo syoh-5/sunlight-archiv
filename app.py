@@ -1,10 +1,11 @@
 import streamlit as st
 import os
+import base64
 
 # 1. 사이트 기본 설정
 st.set_page_config(page_title="도민발전소 자료모음", layout="wide")
 
-# 2. 보안 (비밀번호 설정)
+# 2. 보안
 if "password_correct" not in st.session_state:
     st.session_state["password_correct"] = False
 
@@ -17,34 +18,37 @@ if not st.session_state["password_correct"]:
     else:
         st.stop()
 
-# 3. 본문 시작
+# PDF 뷰어 함수
+def show_pdf(file_path):
+    with open(file_path, "rb") as f:
+        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    pdf_display = f'''
+        <iframe 
+            src="data:application/pdf;base64,{base64_pdf}" 
+            width="100%" height="800px" 
+            type="application/pdf">
+        </iframe>
+    '''
+    st.markdown(pdf_display, unsafe_allow_html=True)
+
+# 3. 본문
 st.title("☀️ 도민발전소 자료모음")
 
-# 탭 구성
-tabs = st.tabs(["⚖️ 제안서", "📈 수익성 분석", "🤝 협동조합", "📡 입찰시나리오", "📝 법령"])
+tabs = st.tabs(["📋 기획안", "📈 수익성 분석", "🤝 협동조합", "📡 입찰시나리오", "📝 법령"])
 
-# --- 탭 1: 제안서 ---
+# --- 탭 1: 기획안 ---
 with tabs[0]:
-    st.header("⚖️ 제안서")
-    st.write("조회(다운로드)할 제안서를 클릭하세요.")
-    st.write("현재는 다운로드 기능만 지원합니다.")
+    st.header("📋 기획안")
+    st.write("조회할 파일을 선택하세요.")
 
-    pdf_files = sorted([f for f in os.listdir('.') if f.endswith('.pdf')])
+    proposal_files = sorted([f for f in os.listdir('proposals') if f.endswith('.pdf')])
 
-    if pdf_files:
-        cols = st.columns(3)
-        for i, file_name in enumerate(pdf_files):
-            with cols[i % 3]:
-                with open(file_name, "rb") as f:
-                    st.download_button(
-                        label=f"📄 {file_name}",
-                        data=f,
-                        file_name=file_name,
-                        mime="application/pdf",
-                        key=f"btn_{i}"
-                    )
+    if proposal_files:
+        selected = st.selectbox("📄 파일 선택", proposal_files, key="proposal_select")
+        if selected:
+            show_pdf(os.path.join('proposals', selected))
     else:
-        st.info("현재 업로드된 법령 자료가 없습니다.")
+        st.info("현재 업로드된 기획안이 없습니다.")
 
 # --- 탭 2: 수익성 분석 ---
 with tabs[1]:
@@ -66,19 +70,13 @@ with tabs[3]:
 # --- 탭 5: 법령 ---
 with tabs[4]:
     st.header("📝 법령검토")
-    plan_files = sorted([f for f in os.listdir('.') if f.endswith('.pdf')])
+    st.write("조회할 법령을 선택하세요.")
 
-    if plan_files:
-        cols_plan = st.columns(2)
-        for i, file_name in enumerate(plan_files):
-            with cols_plan[i % 2]:
-                with open(file_name, "rb") as f:
-                    st.download_button(
-                        label=f"📁 {file_name}",
-                        data=f,
-                        file_name=file_name,
-                        mime="application/pdf",
-                        key=f"plan_btn_{i}"
-                    )
+    law_files = sorted([f for f in os.listdir('laws') if f.endswith('.pdf')])
+
+    if law_files:
+        selected_law = st.selectbox("📄 파일 선택", law_files, key="law_select")
+        if selected_law:
+            show_pdf(os.path.join('laws', selected_law))
     else:
-        st.info("업로드된 기획안이 없습니다.")
+        st.info("업로드된 법령 자료가 없습니다.")
