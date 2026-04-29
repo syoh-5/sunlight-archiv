@@ -62,8 +62,43 @@ with tabs[0]:
 
 # --- 탭 2: 수익성 분석 ---
 with tabs[1]:
-    st.header("📈 재무적 수익성 분석")
-    st.info("수익 시뮬레이션 사이트 및 관련 자료가 업데이트될 예정입니다.")
+    st.header("📈 수익분석")
+
+    # ✏️ 사이트 링크 여기에 추가
+    st.subheader("🔗 관련 사이트")
+    st.markdown("""
+    - [한국에너지공단 재생에너지 통계](https://www.energy.or.kr)
+    - [전력거래소 SMP 공시](https://www.kpx.or.kr)
+    - [경기도 에너지포털](https://energy.gg.go.kr)
+    """)
+
+    st.divider()
+
+    # ✏️ https://www.lawtimes.co.kr/news/articleView.html?idxno=217995&utm_source=chatgpt.com
+    st.subheader("📰 PPA관련 기사")
+
+    articles = [
+        {
+            "title": "PP관련",
+            "url": "https://www.lawtimes.co.kr/news/articleView.html?idxno=217995&utm_source=chatgpt.com"
+        },
+        {
+            "title": "두번째 기사 제목",
+            "url": "https://기사링크주소"
+        },
+        # ✏️ 기사 추가할 때 위 형식 복붙해서 계속 추가
+    ]
+
+    for article in articles:
+        with st.container(border=True):
+            col1, col2 = st.columns([5, 1])
+            with col1:
+                st.markdown(f"**{article['title']}**")
+                st.caption(f"📰 {article['source']} · {article['date']}")
+            with col2:
+                st.link_button("기사 보기 →", article['url'])
+
+
 
 # --- 탭 3: 협동조합 ---
 with tabs[2]:
