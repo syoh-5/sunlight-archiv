@@ -64,9 +64,7 @@ with tabs[1]:
 
     st.subheader("🔗 관련 사이트")
     st.markdown("""
-    - [한국에너지공단 재생에너지 통계](https://www.energy.or.kr)
-    - [전력거래소 SMP 공시](https://www.kpx.or.kr)
-    - [경기도 에너지포털](https://energy.gg.go.kr)
+    - [수익분석](추가예정~~)
     """)
 
     st.divider()
@@ -75,10 +73,10 @@ with tabs[1]:
 
     articles = [
         {
-            "title": "기사 제목을 여기에 입력하세요",
-            "source": "출처 (예: 한겨레)",
-            "date": "2025.04.21",
-            "url": "https://기사링크주소"
+            "title": "PPA",
+            "source": "",
+            "date": "",
+            "url": "https://https://www.lawtimes.co.kr/news/articleView.html?idxno=217995&utm_source=chatgpt.com"
         },
         {
             "title": "두번째 기사 제목",
