@@ -76,3 +76,53 @@ with tabs[4]:
         selected_plan = st.selectbox("조회할 기획안을 선택하세요", pdf_files_plan, key="tab5_select")
         if st.button("기획안 보기", key="tab5_btn"):
             display_pdf(selected_plan)
+
+
+import streamlit as st
+import os
+import base64
+
+# 1. 사이트 기본 설정
+st.set_page_config(page_title="도민발전소 통합 플랫폼", layout="wide")
+
+# PDF를 새 창에서 여는 함수 (가장 안전한 방식)
+def open_pdf(file_path):
+    with open(file_path, "rb") as f:
+        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    # 새 탭에서 PDF를 열도록 하는 HTML 링크 생성
+    pdf_link = f'<a href="data:application/pdf;base64,{base64_pdf}" target="_blank" style="text-decoration: none; background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px;">📄 선택한 법령 새 탭에서 열기</a>'
+    st.markdown(pdf_link, unsafe_allow_html=True)
+
+# 2. 보안 (비밀번호 설정)
+if "password_correct" not in st.session_state:
+    st.session_state["password_correct"] = False
+
+if not st.session_state["password_correct"]:
+    st.title("🔒 보안 접속")
+    pw = st.text_input("비밀번호를 입력하세요", type="password")
+    if pw == "1234":
+        st.session_state["password_correct"] = True
+        st.rerun()
+    else:
+        st.stop()
+
+# 3. 본문 시작
+st.title("☀️ 도민발전소 통합 관리 플랫폼")
+
+# 요청하신 탭 구성
+tabs = st.tabs(["⚖️ 법령검토", "📈 수익성 분석", "🤝 협동조합", "📡 입찰시나리오", "📝 기획안"])
+
+# --- 탭 1: 법령검토 ---
+with tabs[0]:
+    st.header("법령 및 지침 검토")
+    pdf_files = [f for f in os.listdir('.') if f.endswith('.pdf')]
+    
+    if pdf_files:
+        selected_file = st.selectbox("조회할 법령 파일을 선택하세요", pdf_files)
+        # 파일을 선택하면 바로 열기 링크 제공
+        st.write(f"**선택된 파일:** {selected_file}")
+        open_pdf(selected_file)
+        
+        st.info("💡 위 버튼을 누르면 브라우저 새 탭에서 PDF가 열립니다. 차단 팝업이 뜨면 '허용'을 눌러주세요.")
+    else:
+        st.info("업로드된 PDF 파일이 없습니다.")
