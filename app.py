@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-import base64
+from streamlit_pdf_viewer import pdf_viewer
 
 # 1. 사이트 기본 설정
 st.set_page_config(page_title="도민발전소 자료모음", layout="wide")
@@ -21,15 +21,8 @@ if not st.session_state["password_correct"]:
 # PDF 뷰어 함수
 def show_pdf(file_path):
     with open(file_path, "rb") as f:
-        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-    pdf_display = f'''
-        <iframe 
-            src="data:application/pdf;base64,{base64_pdf}" 
-            width="100%" height="800px" 
-            type="application/pdf">
-        </iframe>
-    '''
-    st.markdown(pdf_display, unsafe_allow_html=True)
+        pdf_bytes = f.read()
+    pdf_viewer(pdf_bytes)
 
 # 3. 본문
 st.title("☀️ 도민발전소 자료모음")
@@ -40,9 +33,7 @@ tabs = st.tabs(["📋 기획안", "📈 수익성 분석", "🤝 협동조합", 
 with tabs[0]:
     st.header("📋 기획안")
     st.write("조회할 파일을 선택하세요.")
-
     proposal_files = sorted([f for f in os.listdir('proposals') if f.endswith('.pdf')])
-
     if proposal_files:
         selected = st.selectbox("📄 파일 선택", proposal_files, key="proposal_select")
         if selected:
@@ -71,9 +62,7 @@ with tabs[3]:
 with tabs[4]:
     st.header("📝 법령검토")
     st.write("조회할 법령을 선택하세요.")
-
     law_files = sorted([f for f in os.listdir('laws') if f.endswith('.pdf')])
-
     if law_files:
         selected_law = st.selectbox("📄 파일 선택", law_files, key="law_select")
         if selected_law:
