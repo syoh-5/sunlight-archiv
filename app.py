@@ -32,14 +32,12 @@ def file_card_selector(files, folder, session_key):
     cols = st.columns(3)
     for i, file_name in enumerate(files):
         with cols[i % 3]:
-            # 선택된 파일이면 강조 표시
             is_selected = st.session_state[session_key] == file_name
             label = f"{'✅' if is_selected else '📄'} {file_name.replace('.pdf', '')}"
             if st.button(label, key=f"{session_key}_{i}", use_container_width=True):
                 st.session_state[session_key] = file_name
                 st.rerun()
 
-    # 선택된 파일 PDF 뷰어로 표시
     if st.session_state[session_key]:
         st.divider()
         st.markdown(f"**📖 현재 보는 파일:** `{st.session_state[session_key]}`")
@@ -48,7 +46,7 @@ def file_card_selector(files, folder, session_key):
 # 3. 본문
 st.title("☀️ 도민발전소 자료모음")
 
-tabs = st.tabs(["📋 기획안", "📈 수익성 분석", "🤝 협동조합", "📡 입찰시나리오", "📝 법령"])
+tabs = st.tabs(["📋 기획안", "📈 수익분석", "🤝 협동조합", "📡 입찰시나리오", "📝 법령"])
 
 # --- 탭 1: 기획안 ---
 with tabs[0]:
@@ -60,11 +58,10 @@ with tabs[0]:
     else:
         st.info("현재 업로드된 기획안이 없습니다.")
 
-# --- 탭 2: 수익성 분석 ---
+# --- 탭 2: 수익분석 ---
 with tabs[1]:
     st.header("📈 수익분석")
 
-    # ✏️ 사이트 링크 여기에 추가
     st.subheader("🔗 관련 사이트")
     st.markdown("""
     - [한국에너지공단 재생에너지 통계](https://www.energy.or.kr)
@@ -74,19 +71,21 @@ with tabs[1]:
 
     st.divider()
 
-    # ✏️ https://www.lawtimes.co.kr/news/articleView.html?idxno=217995&utm_source=chatgpt.com
-    st.subheader("📰 PPA관련 기사")
+    st.subheader("📰 관련 기사")
 
     articles = [
         {
-            "title": "PP관련",
-            "url": "https://www.lawtimes.co.kr/news/articleView.html?idxno=217995&utm_source=chatgpt.com"
+            "title": "기사 제목을 여기에 입력하세요",
+            "source": "출처 (예: 한겨레)",
+            "date": "2025.04.21",
+            "url": "https://기사링크주소"
         },
         {
             "title": "두번째 기사 제목",
+            "source": "출처 (예: 경향신문)",
+            "date": "2025.03.15",
             "url": "https://기사링크주소"
         },
-        # ✏️ 기사 추가할 때 위 형식 복붙해서 계속 추가
     ]
 
     for article in articles:
@@ -98,12 +97,9 @@ with tabs[1]:
             with col2:
                 st.link_button("기사 보기 →", article['url'])
 
-
-
 # --- 탭 3: 협동조합 ---
 with tabs[2]:
     st.header("🤝 협동조합 거버넌스")
-
     with st.expander("📌 조합 설립 관련 자료"):
         st.write("- 표준 정관 안")
         st.write("- 조합원 모집 가이드")
@@ -111,7 +107,6 @@ with tabs[2]:
     st.divider()
     st.subheader("🖼️ 협동조합 자료 갤러리")
 
-    # images 폴더에서 이미지 불러오기
     image_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
     if os.path.exists('images'):
         image_files = sorted([
@@ -130,7 +125,7 @@ with tabs[2]:
         else:
             st.info("현재 업로드된 이미지가 없습니다.")
     else:
-        st.info("images 폴더가 없습니다. GitHub에 images 폴더를 만들고 이미지를 업로드해주세요.")
+        st.info("images 폴더가 없습니다.")
 
 # --- 탭 4: 입찰시나리오 ---
 with tabs[3]:
