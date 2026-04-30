@@ -107,9 +107,8 @@ with tabs[1]:
 
     st.subheader("🔗 관련 사이트")
     st.markdown("""
-    - [한국에너지공단 재생에너지 통계](https://www.energy.or.kr)
-    - [전력거래소 SMP 공시](https://www.kpx.or.kr)
-    - [경기도 에너지포털](https://energy.gg.go.kr)
+    - [연계예정](~~~)
+    - [연계예정](~~~)
     """)
 
     st.divider()
