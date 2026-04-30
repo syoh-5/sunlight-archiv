@@ -32,7 +32,7 @@ def show_pdf(file_path):
         pdf_bytes = f.read()
     pdf_viewer(pdf_bytes)
 
-# 카드형 파일 선택기
+# 카드형 파일 선택기 (조회 + 다운로드)
 def file_card_selector(files, folder, session_key):
     if session_key not in st.session_state:
         st.session_state[session_key] = None
@@ -48,7 +48,23 @@ def file_card_selector(files, folder, session_key):
 
     if st.session_state[session_key]:
         st.divider()
-        st.markdown(f"**📖 현재 보는 파일:** `{st.session_state[session_key]}`")
+
+        # ✅ 파일명 + 다운로드 버튼 한 줄에
+        col_title, col_btn = st.columns([6, 1])
+        with col_title:
+            st.markdown(f"**📖 현재 보는 파일:** `{st.session_state[session_key]}`")
+        with col_btn:
+            file_path = os.path.join(folder, st.session_state[session_key])
+            with open(file_path, "rb") as f:
+                st.download_button(
+                    label="⬇️ 저장",
+                    data=f,
+                    file_name=st.session_state[session_key],
+                    mime="application/pdf",
+                    key=f"dl_{session_key}",
+                    use_container_width=True
+                )
+
         show_pdf(os.path.join(folder, st.session_state[session_key]))
 
 # 이미지 갤러리
@@ -84,7 +100,7 @@ tabs = st.tabs([
     "🤝 협동조합",
     "📡 입찰시나리오",
     "📝 법령",
-    "📂 관련자료"   # ✨ 새 탭
+    "📂 관련자료"
 ])
 
 # ===========================
@@ -92,7 +108,7 @@ tabs = st.tabs([
 # ===========================
 with tabs[0]:
     st.header("📋 기획안")
-    st.caption("파일을 클릭하면 바로 아래에 열립니다.")
+    st.caption("파일을 클릭하면 바로 아래에서 조회 및 저장할 수 있습니다.")
     proposal_files = sorted([f for f in os.listdir('proposals') if f.endswith('.pdf')])
     if proposal_files:
         file_card_selector(proposal_files, 'proposals', 'selected_proposal')
@@ -137,9 +153,8 @@ with tabs[1]:
 with tabs[2]:
     st.header("🤝 협동조합 거버넌스")
 
-    # 서류 섹션
     st.subheader("📄 관련 서류")
-    st.caption("파일을 클릭하면 바로 아래에 열립니다.")
+    st.caption("파일을 클릭하면 바로 아래에서 조회 및 저장할 수 있습니다.")
     coop_files = sorted([f for f in os.listdir('cooperative') if f.endswith('.pdf')]) \
         if os.path.exists('cooperative') else []
     if coop_files:
@@ -149,7 +164,6 @@ with tabs[2]:
 
     st.divider()
 
-    # 이미지 갤러리 섹션
     st.subheader("🖼️ 갤러리")
     image_gallery('cooperative_img')
 
@@ -165,7 +179,7 @@ with tabs[3]:
 # ===========================
 with tabs[4]:
     st.header("📝 법령검토")
-    st.caption("파일을 클릭하면 바로 아래에 열립니다.")
+    st.caption("파일을 클릭하면 바로 아래에서 조회 및 저장할 수 있습니다.")
     law_files = sorted([f for f in os.listdir('laws') if f.endswith('.pdf')])
     if law_files:
         file_card_selector(law_files, 'laws', 'selected_law')
@@ -173,12 +187,11 @@ with tabs[4]:
         st.info("업로드된 법령 자료가 없습니다.")
 
 # ===========================
-# 탭 6: 관련자료  ✨ 새 탭
+# 탭 6: 관련자료
 # ===========================
 with tabs[5]:
     st.header("📂 관련자료")
 
-    # 링크 섹션
     st.subheader("🔗 관련 링크")
     st.markdown("""
     - [링크 제목 1](https://링크주소)
@@ -187,9 +200,8 @@ with tabs[5]:
 
     st.divider()
 
-    # 파일 섹션
     st.subheader("📄 첨부 자료")
-    st.caption("파일을 클릭하면 바로 아래에 열립니다.")
+    st.caption("파일을 클릭하면 바로 아래에서 조회 및 저장할 수 있습니다.")
     ref_files = sorted([f for f in os.listdir('references') if f.endswith('.pdf')]) \
         if os.path.exists('references') else []
     if ref_files:
